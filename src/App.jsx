@@ -1,9 +1,20 @@
-import React from 'react'
+import React from "react";
+import Header from "./Header";
+import Footer from "./Footer";
+import HeroSection from "./HeroSection";
+import TaskBoard from "./task/TaskBoard";
 
 const App = () => {
   return (
-    <h2 className='text-5xl text-white p-3 font-bold  flex items-center justify-between min-h-screen uppercase bg-red-500 w-ful'>App</h2>
-  )
-}
+    <>
+      <Header />
+      <div className="flex flex-col justify-center items-center">
+        <HeroSection />
+        <TaskBoard />
+      </div>
+      <Footer />
+    </>
+  );
+};
 
-export default App
+export default App;
