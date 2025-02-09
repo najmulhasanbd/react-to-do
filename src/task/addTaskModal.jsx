@@ -1,100 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const AddTaskModal = () => {
+const AddTaskModal = ({ taskToUpdate, onSave, onClose }) => {
+  const [task, setTask] = useState({
+    title: "",
+    description: "",
+    tags: "",
+    priority: "",
+    isFavorite: false,
+  });
 
-    const[task, setTask]=useState([
-        title:'',
-        description:'',
-        tags:[],
-        priority:'',
-        isFavorite:false
-    ])
+  useEffect(() => {
+    if (taskToUpdate) {
+      setTask(taskToUpdate);
+    }
+  }, [taskToUpdate]);
+
+  const handleChange = evt => {
+    const { name, value } = evt.target;
+    setTask(prev => ({
+      ...prev,
+      [name]: name === "tags" ? value.split(",") : value,
+    }));
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    onSave(task, !taskToUpdate);
+    onClose();
+  };
 
   return (
-    <>
-      <form
-        className="mx-auto my-10 z-10 w-full max-w-[740px] rounded-xl border border-[#FEFBFB]/[36%] bg-[#191D26] p-9 max-md:px-4 lg:my-20 lg:p-11 absolute top-1/4 left-1/3"
-      >
-        <h2 className="mb-9 text-center text-2xl font-bold text-white lg:mb-11 lg:text-[28px]">
-          Add New Task
-        </h2>
+    <form
+      onSubmit={handleSubmit}
+      className="fixed top-1/4 left-1/3 bg-[#191D26] p-9 rounded-xl"
+    >
+      <h2 className="text-white text-center text-2xl font-bold">Add New Task</h2>
 
-        {/* Inputs */}
-        <div className="space-y-9 text-white lg:space-y-10">
-          {/* Title */}
-          <div className="space-y-2 lg:space-y-3">
-            <label htmlFor="title">Title</label>
-            <input
-              className="block w-full rounded-md bg-[#2D323F] px-3 py-2.5"
-              type="text"
-              name="title"
-              id="title"
-              value={task.title}
-              onChange={handleChange}
-              required
-            />
-          </div>
+      <div className="text-white space-y-4 mt-6">
+        <input className="w-full p-2 rounded bg-[#2D323F]" type="text" name="title" placeholder="Title" value={task.title} onChange={handleChange} required />
+        <textarea className="w-full p-2 rounded bg-[#2D323F]" name="description" placeholder="Description" value={task.description} onChange={handleChange} required></textarea>
+        <input className="w-full p-2 rounded bg-[#2D323F]" type="text" name="tags" placeholder="Tags (comma separated)" value={task.tags} onChange={handleChange} required />
+        <select className="w-full p-2 rounded bg-[#2D323F]" name="priority" value={task.priority} onChange={handleChange} required>
+          <option value="">Select Priority</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
 
-          {/* Description */}
-          <div className="space-y-2 lg:space-y-3">
-            <label htmlFor="description">Description</label>
-            <textarea
-              className="block min-h-[120px] w-full rounded-md bg-[#2D323F] px-3 py-2.5 lg:min-h-[180px]"
-              name="description"
-              id="description"
-              value={task.description}
-              onChange={handleChange}
-              required
-            ></textarea>
-          </div>
-
-          {/* Input Group */}
-          <div className="grid grid-cols-2 gap-x-4 max-md:space-y-9 md:grid lg:gap-x-10 xl:gap-x-20">
-            {/* Tags */}
-            <div className="space-y-2 lg:space-y-3">
-              <label htmlFor="tags">Tags</label>
-              <input
-                className="block w-full rounded-md bg-[#2D323F] px-3 py-2.5"
-                type="text"
-                name="tags"
-              value={task.tags}
-              onChange={handleChange}
-                id="tags"
-                required
-              />
-            </div>
-
-            {/* Priority */}
-            <div className="space-y-2 lg:space-y-3">
-              <label htmlFor="priority">Priority</label>
-              <select
-                className="block w-full cursor-pointer rounded-md bg-[#2D323F] px-3 py-2.5"
-                name="priority"
-                id="priority"
-              value={task.priority}
-              onChange={handleChange}
-                required
-              >
-                <option value="">Select Priority</option>
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        {/* Inputs End */}
-
-        <div className="mt-16 flex justify-center lg:mt-20">
-          <button
-            type="submit"
-            className="rounded bg-blue-600 px-4 py-2 text-white transition-all hover:opacity-80"
-          >
-            Create new Task
-          </button>
-        </div>
-      </form>
-    </>
+      <div className="mt-4 flex justify-between">
+        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
+        <button type="button" className="bg-gray-600 text-white px-4 py-2 rounded" onClick={onClose}>Cancel</button>
+      </div>
+    </form>
   );
 };
 
